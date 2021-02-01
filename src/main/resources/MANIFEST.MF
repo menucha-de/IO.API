@@ -1,0 +1,10 @@
+Bundle-Name: Ha-VIS Device IO API
+Bundle-SymbolicName: havis.device.io-api
+Bundle-Version: 2.6.0
+Implementation-Version: 2.6
+Bundle-ManifestVersion: 2
+Bundle-Vendor: HARTING IT_SD
+Export-Package: 
+ havis.device.io,
+ havis.device.io.exception
+

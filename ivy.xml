@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
+
+	<info organisation="havis/device/io" module="api" default="true" />
+
+	<configurations>
+		<conf name="default" />
+	</configurations>
+
+	<dependencies>
+		<dependency org="org/jibx" name="jibx-tools" rev="${jibx.version}" conf="default" />
+		<dependency org="havis/tools" name="jibx" rev="${jibx-tools.version}" conf="default" />
+	</dependencies>
+
+</ivy-module>

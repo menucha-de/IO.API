@@ -1,0 +1,31 @@
+<schema-set package="havis.device.io">
+	<class-decorator class="org.jibx.schema.codegen.extend.SerializableDecorator" />
+	<schema-set package="havis.device.io" names="base.xsd">
+		<class-decorator class="havis.tools.jibx.ConstructorDecorator"
+			match-name="StateEvent" params="short id, State state" />
+		<class-decorator class="havis.tools.jibx.ConstructorDecorator"
+			match-name="IOConfiguration" params="short id" />
+		<class-decorator class="havis.tools.jibx.ConstructorDecorator"
+			match-name="IOConfiguration" empty="false"
+			params="short id, Direction direction, State state, boolean enable" />
+		<class-decorator class="havis.tools.jibx.EqualsDecorator"
+			match-name="IOConfiguration" params="id" />
+		<class-decorator class="havis.tools.jibx.CloneDecorator"
+			match-name="IOConfiguration" />
+		<class-decorator class="havis.tools.jibx.ConstructorDecorator"
+			match-name="KeepAliveConfiguration" params="boolean enable, int interval" />
+		<class-decorator class="havis.tools.jibx.CloneDecorator"
+			match-name="KeepAliveConfiguration" />
+	</schema-set>
+	<schema-set package="havis.device.io.exception" names="exception.xsd">
+		<class-decorator
+			class="org.jibx.schema.codegen.extend.SerializableDecorator" />
+		<class-decorator class="org.jibx.schema.codegen.extend.ExtensionDecorator"
+			match-name="IOException" base-class="java.lang.Exception" />
+		<class-decorator class="havis.tools.jibx.SuperConstructorDecorator" />
+		<class-decorator class="havis.tools.jibx.SuperConstructorDecorator"
+			params="String message" />
+		<class-decorator class="havis.tools.jibx.SuperConstructorDecorator"
+			params="String message, Throwable cause" />
+	</schema-set>
+</schema-set>

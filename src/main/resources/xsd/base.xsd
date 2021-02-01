@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xs:schema xmlns="urn:havis:device:io:xsd:1" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" targetNamespace="urn:havis:device:io:xsd:1">
+
+	<xs:complexType name="Configuration" abstract="true" />
+
+	<xs:complexType name="GlobalConfiguration">
+		<xs:sequence>
+			<xs:element name="IO" type="IOConfiguration" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="keepAlive" type="KeepAliveConfiguration" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="IOConfiguration">
+		<xs:complexContent>
+			<xs:extension base="Configuration">
+				<xs:sequence>
+					<xs:element name="id" type="xs:short">
+						<xs:annotation>
+							<xs:documentation>
+								The ID of the IO
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="direction" type="Direction">
+						<xs:annotation>
+							<xs:documentation>
+								The IO direction
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="state" type="State">
+						<xs:annotation>
+							<xs:documentation>
+								The IO state
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="initialState" type="State" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								The initial IO state
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="enable" type="xs:boolean">
+						<xs:annotation>
+							<xs:documentation>
+								The enable state
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="KeepAliveConfiguration">
+		<xs:complexContent>
+			<xs:extension base="Configuration">
+				<xs:sequence>
+					<xs:element name="enable" type="xs:boolean">
+						<xs:annotation>
+							<xs:documentation>
+								The keep-alive enable state
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="interval" type="xs:int">
+						<xs:annotation>
+							<xs:documentation>
+								The interval of the keep-alive event
+								in
+								milliseconds
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:simpleType name="Type">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ALL" />
+			<xs:enumeration value="IO" />
+			<xs:enumeration value="KEEP_ALIVE" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="Direction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="INPUT">
+				<xs:annotation>
+					<xs:documentation>Direction of IO is input</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="OUTPUT">
+				<xs:annotation>
+					<xs:documentation>Direction of IO is output</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="State">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="LOW">
+				<xs:annotation>
+					<xs:documentation>State is low</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="HIGH">
+				<xs:annotation>
+					<xs:documentation>State is high</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="UNKNOWN">
+				<xs:annotation>
+					<xs:documentation>State is unknown. Invalid for output
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="StateEvent">
+		<xs:sequence>
+			<xs:element name="id" type="xs:short">
+				<xs:annotation>
+					<xs:documentation>
+						The ID of the IO
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="state" type="State">
+				<xs:annotation>
+					<xs:documentation>
+						The current state of IO
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

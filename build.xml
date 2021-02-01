@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<project name="havis.device.io-api" default="publish" xmlns:ivy="antlib:org.apache.ivy.ant">
+
+	<property file="${basedir}/build.properties" />
+	<property name="basename" value="${ant.project.name}" />
+	<property name="build.dir" location="${basedir}/target" />
+	<property name="build.dir.classes" location="${build.dir}/classes" />
+	<property name="build.dir.jibx" value="${build.dir}/jibx" />
+	<property name="build.dir.jibx.classes" value="${build.dir.jibx}/classes" />
+	<property name="build.dir.jibx.src" value="${build.dir.jibx}/src" />
+	<property name="doc.dir" location="${build.dir}/doc" />
+	<property name="lib.dir" location="${basedir}/lib" />
+	<property name="resources.dir" location="${basedir}/src/main/resources" />
+	<property name="resources.dir.xsd" location="${resources.dir}/xsd" />
+	<property name="src.dir" location="${basedir}/src/main/java" />
+
+	<property file="${resources.dir}/build.properties" />
+	<property file="${resources.dir}/MANIFEST.MF" prefix="manifest" />
+
+	<property name="javac.version" value="8" />
+
+	<path id="build.classpath">
+		<fileset dir="${lib.dir}" />
+	</path>
+
+	<!-- Checks if the build.properties file exists 
+         and prints an error message if the file does not exist -->
+	<target name="check.build.properties">
+		<condition property="ivy.resolver" else="local">
+			<isset property="ivy.resolver" />
+		</condition>
+		<fail message="Missing property 'api.url'. Does 'build.properties' file exists?" unless="api.url" />
+		<fail message="Missing property 'ivy.url'. Does 'build.properties' file exists?" unless="ivy.url" />
+	</target>
+
+	<target name="clean-cache" description="Cleans ivy cache">
+		<ivy:cleancache />
+	</target>
+
+	<target name="clean" description="Cleans the project">
+		<delete dir="${build.dir}" />
+		<delete dir="${lib.dir}" />
+	</target>
+
+	<target name="clean-all" depends="clean, clean-cache" description="Cleans the project and ivy cache" />
+
+	<target name="retrieve" depends="check.build.properties" description="">
+		<ivy:retrieve log="quiet" />
+	</target>
+
+	<target name="check.jibx">
+		<uptodate property="uptodate.jibx" targetfile="${build.dir.jibx.src}/binding.xml">
+			<srcfiles dir="${resources.dir.xsd}" includes="*.xsd" />
+		</uptodate>
+	</target>
+
+	<!-- Generates Java code foldes from XSDs -->
+	<target name="jibx" depends="check.jibx, retrieve" unless="uptodate.jibx">
+		<mkdir dir="${build.dir.jibx.src}" />
+		<mkdir dir="${build.dir.jibx.classes}" />
+
+		<!-- call jibx code generator to create java files from XSDs (will be placed in build.dir.jibx.src) -->
+		<java classpathref="build.classpath" classname="org.jibx.schema.codegen.CodeGen" fork="yes" failonerror="yes">
+			<arg line="-v" />
+			<arg line="-t ${build.dir.jibx.src}" />
+			<arg line="-c ${resources.dir.xsd}/jibx-conf.xml" />
+			<arg line="${resources.dir.xsd}/*.xsd" />
+		</java>
+
+		<javac srcdir="${build.dir.jibx.src}" destdir="${build.dir.jibx.classes}" release="${javac.version}" debug="${javac.debug}" includeantruntime="false" />
+	</target>
+
+	<!-- Compiles the java source files -->
+	<target name="compile" depends="jibx">
+		<mkdir dir="${build.dir.classes}" />
+		<javac srcdir="${src.dir}" destdir="${build.dir.classes}" release="${javac.version}" debug="${javac.debug}" includeantruntime="false">
+			<classpath>
+				<pathelement location="${build.dir.jibx.classes}" />
+				<path refid="build.classpath" />
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="jar" depends="compile" description="Creates a JAR of the implemented and generated classes">
+		<!-- create JAR -->
+		<jar jarfile="${build.dir}/${basename}.jar" manifest="${resources.dir}/MANIFEST.MF">
+			<fileset dir="${build.dir.classes}" />
+			<fileset dir="${build.dir.jibx.classes}" />
+		</jar>
+	</target>
+
+	<target name="jar-src" description="Creates a sources JAR of the implemented and generated classes">
+		<!-- create sources JAR -->
+		<jar jarfile="${build.dir}/${basename}-sources.jar">
+			<fileset dir="${src.dir}" />
+			<fileset dir="${build.dir.jibx.src}" />
+		</jar>
+	</target>
+
+	<target name="jar-doc" description="Creates a javadoc JAR of the implemented and generated classes">
+		<!-- create javadoc JAR -->
+		<javadoc destdir="${doc.dir}" author="true" version="true" use="true" windowtitle="${javadoc.windowtitle}" doctitle="${javadoc.doctitle}" bottom="${javadoc.buttom}">
+			<packageset dir="${src.dir}" />
+			<packageset dir="${build.dir.jibx.src}" />
+			<classpath>
+				<pathelement location="${build.dir.jibx.classes}" />
+				<path refid="build.classpath" />
+			</classpath>
+			<group title="Packages" packages="havis.devive.io.*" />
+			<link offline="true" href="http://docs.oracle.com/javase/7/docs/api/" packagelistURL="${api.url}/javase/7/" />
+		</javadoc>
+		<jar jarfile="${build.dir}/${basename}-javadoc.jar" basedir="${doc.dir}" />
+	</target>
+
+	<target name="publish" depends="jar, jar-src, jar-doc" description="Publishes the JAR to the repository">
+		<ivy:resolve file="${resources.dir}/ivy.xml" />
+
+		<ivy:publish resolver="${ivy.resolver}" pubrevision="${manifest.Bundle-Version}" status="integration" overwrite="true">
+			<artifacts pattern="${build.dir}/[artifact].[ext]" />
+		</ivy:publish>
+	</target>
+</project>

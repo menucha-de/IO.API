@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xs:schema xmlns="urn:havis:device:io:exception:xsd:1"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+	targetNamespace="urn:havis:device:io:exception:xsd:1">
+
+	<xs:complexType name="IOException" abstract="true" />
+
+	<xs:complexType name="ConnectionException">
+		<xs:complexContent>
+			<xs:extension base="IOException" />
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="CommunicationException">
+		<xs:complexContent>
+			<xs:extension base="IOException" />
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="ParameterException">
+		<xs:complexContent>
+			<xs:extension base="IOException" />
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="ImplementationException">
+		<xs:complexContent>
+			<xs:extension base="IOException" />
+		</xs:complexContent>
+	</xs:complexType>
+
+</xs:schema>
