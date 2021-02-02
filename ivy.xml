@@ -9,7 +9,7 @@
 
 	<dependencies>
 		<dependency org="org/jibx" name="jibx-tools" rev="${jibx.version}" conf="default" />
-		<dependency org="havis/tools" name="jibx" rev="${jibx-tools.version}" conf="default" />
+		<dependency org="havis/tools" name="jibx" rev="${havis.version}" conf="default" />
 	</dependencies>
 
 </ivy-module>
